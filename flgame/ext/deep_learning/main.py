@@ -1,9 +1,11 @@
+import logging
+
 import numpy as np
 import tensorflow as tf
 from dynaconf import settings
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, current_app, jsonify, request
+
 from flgame.ext.deep_learning.deep_reinforcement_learning import createNetwork
-import logging
 
 bp = Blueprint("api", __name__)
 
@@ -33,12 +35,15 @@ def bestmove(input):
         data = sess.run(
             tf.argmax(prediction.eval(session=sess, feed_dict={x: [input]}), 1)
         )
+    logging.debug("bestmove Data => {}".format(data))
     return data
 
 
 @bp.route("/api/ticky", methods=["POST"])
 def ticky_api():
+    current_app.logger.debug("Request => {}".format(request.get_json()))
     data = request.get_json()
     data = np.array(data["data"])
     data = data.tolist()
+    current_app.logger.debug("Data => {}".format(data))
     return jsonify(np.asscalar(bestmove(data)[0]))
