@@ -39,6 +39,7 @@ def bestmove(input):
         logging.debug(input)
         logging.debug("The start time is :{}".format(starttime))
         logging.debug(prediction)
+        logging.debug(tf)
         data = sess.run(
             tf.argmax(prediction.eval(session=sess, feed_dict={x: [input]}), 1)
         )
