@@ -31,6 +31,8 @@ graph = tf.compat.v1.get_default_graph()
 
 def bestmove(input):
     global graph
+    logging.debug(graph.as_default())
+    logging.debug(sess)
     with graph.as_default():
         data = sess.run(
             tf.argmax(prediction.eval(session=sess, feed_dict={x: [input]}), 1)
