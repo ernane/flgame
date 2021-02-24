@@ -23,6 +23,3 @@ jobs:
           heroku_email: "ernane.sena@gmail.com"
         env:
           DYNACONF_SECRET_KEY: ${{secrets.SECRET_KEY}}
-          FLASK_ENV: "production"
-          FLASK_APP: "flgame.app:create_app"
-          ENV_FOR_DYNACONF: "production"
