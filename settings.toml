@@ -1,0 +1,31 @@
+[default]
+DEBUG = false
+EXTENSIONS = [
+    "flgame.ext.web:init_app",
+    "flgame.ext.logs:init_app",
+    "flgame.ext.deep_learning:init_app"
+]
+MODEL_PATH = "./flgame/ext/deep_learning/model"
+LOG_TYPE = "stream"
+LOG_LEVEL = "INFO"
+LOG_DIR = "./data/logs"
+APP_LOG_NAME = "app.log"
+WWW_LOG_NAME = "www.log"
+LOG_MAX_BYTES = 100_000_000
+LOG_COPIES = 5
+
+[development]
+DEBUG = true
+LOG_LEVEL = "DEBUG"
+EXTENSIONS = [
+    "flgame.ext.web:init_app",
+    "flgame.ext.logs:init_app",
+    "flgame.ext.deep_learning:init_app",
+    "flask_debugtoolbar:DebugToolbarExtension"
+]
+
+[test]
+DEBUG = true
+
+[production]
+DEBUG = false

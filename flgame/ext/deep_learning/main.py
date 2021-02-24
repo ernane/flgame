@@ -1,0 +1,44 @@
+import numpy as np
+import tensorflow as tf
+from dynaconf import settings
+from flask import Blueprint, jsonify, request
+from flgame.ext.deep_learning.deep_reinforcement_learning import createNetwork
+import logging
+
+bp = Blueprint("api", __name__)
+
+# Abrindo sessão
+sess = tf.compat.v1.InteractiveSession()
+
+# Previsões
+x, prediction, _ = createNetwork()
+
+# Carregando o modelo treinado
+saver = tf.compat.v1.train.Saver()
+checkpoint = tf.train.get_checkpoint_state(settings.MODEL_PATH)
+
+if checkpoint and checkpoint.model_checkpoint_path:
+    s = saver.restore(sess, checkpoint.model_checkpoint_path)
+    logging.info(
+        "Modelo carregado com sucesso: {}".format(checkpoint.model_checkpoint_path)
+    )
+else:
+    logging.warning("Não foi possível carregar o modelo")
+graph = tf.compat.v1.get_default_graph()
+
+
+def bestmove(input):
+    global graph
+    with graph.as_default():
+        data = sess.run(
+            tf.argmax(prediction.eval(session=sess, feed_dict={x: [input]}), 1)
+        )
+    return data
+
+
+@bp.route("/api/ticky", methods=["POST"])
+def ticky_api():
+    data = request.get_json()
+    data = np.array(data["data"])
+    data = data.tolist()
+    return jsonify(np.asscalar(bestmove(data)[0]))

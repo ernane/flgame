@@ -1,0 +1,31 @@
+name: app-publish
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          make install      
+      - name: Deploy to heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "flgame-app"
+          heroku_email: "ernane.sena@gmail.com"
+        env:
+          DYNACONF_SECRET_KEY: ${{secrets.SECRET_KEY}}
+          FLASK_ENV: "production"
+          FLASK_APP: "flgame.app:create_app"
+          ENV_FOR_DYNACONF: "production"
